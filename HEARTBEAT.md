@@ -10,5 +10,5 @@ cd ~/.openclaw/shared-knowledge && git pull --rebase origin master
 
 ### 2. 同步自己的记忆
 ```bash
-cd ~/.openclaw/workspace && git push origin main
+cd ~/.openclaw/workspace && git push origin master:main
 ```
