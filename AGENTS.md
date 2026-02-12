@@ -235,3 +235,10 @@ This is a starting point. Add your own conventions, style, and rules as you figu
 - `## 今日事件`（按条目记录）
 - `## 技术笔记`（关键命令/代码）
 - `## 待办`（checkbox）
+
+### 🔄 记忆维护（心跳时执行）
+每隔几天：
+1. 回顾近期 `memory/*.md` 日志
+2. 将重要内容提炼到 `MEMORY.md`
+3. 删除 `MEMORY.md` 中过时的信息
+4. 清理超过 30 天的详细日志（保留 `learnings/`）
