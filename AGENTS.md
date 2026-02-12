@@ -230,3 +230,8 @@ This is a starting point. Add your own conventions, style, and rules as you figu
 - 遇到的问题和解决方案
 - 学到的新知识
 - 待办事项
+
+推荐模板（见 `memory/TEMPLATE.md`）：
+- `## 今日事件`（按条目记录）
+- `## 技术笔记`（关键命令/代码）
+- `## 待办`（checkbox）
