@@ -1,6 +1,9 @@
 # Jzrm OpenClaw 自动化系统说明
 
 > 给“容易忘”的未来自己：这份文档是当前系统的总览 + 实现方式 + 常用命令。
+> 
+> 本套系统默认采用并参考以下项目思路进行搭建：
+> - SegmentFault Wiki（OpenClaw 相关文章）：https://segmentfault.com/a/1190000047594387
 
 ## 一、这套系统已经实现了什么
 
@@ -174,7 +177,12 @@ git -C /root/.openclaw/workspace push origin master:main
 
 ---
 
-## 六、记忆维护原则（给未来的自己）
+## 六、项目来源与参考
+
+- 主参考项目（Wiki）：https://segmentfault.com/a/1190000047594387
+- 说明：本套系统的目录规划、自动化思路、日常维护策略均以该项目为参考基线，再结合当前环境（systemd / Telegram / PushPlus / Git）做本地化调整。
+
+## 七、记忆维护原则（给未来的自己）
 
 - 做完重要事：写 `memory/YYYY-MM-DD.md`
 - 每天结束：提炼 `learnings/YYYY-MM-DD.md`
