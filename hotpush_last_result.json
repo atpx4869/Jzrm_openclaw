@@ -1,0 +1,11 @@
+{
+  "push_http_status": 200,
+  "push_ok": true,
+  "push_msg": "执行成功",
+  "push_response": {
+    "code": 200,
+    "msg": "执行成功",
+    "data": "c1039d6d8944425491d92026eb3b3279"
+  },
+  "update_time": "2026-02-12 17:01"
+}
