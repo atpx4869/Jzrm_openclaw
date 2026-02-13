@@ -18,9 +18,25 @@
 - **名字**：
 - **位置**：
 - **偏好**：
+  - 希望我在自动化运维与文档整理中，主动做提醒（尤其定时任务、日志、推送链路）。
+  - 偏好中文沟通。
 
 ## 📁 重要路径
-（记录常用的文件和目录路径）
+- `~/.openclaw/workspace/`：主工作区（所有核心文档与记忆文件）
+- `~/.openclaw/workspace/MEMORY.md`：长期记忆（精华沉淀）
+- `~/.openclaw/workspace/memory/`：每日日志目录
+- `~/.openclaw/workspace/learnings/`：学习总结目录
+- `~/.openclaw/workspace/HEARTBEAT.md`：心跳检查清单
+- `~/.openclaw/openclaw.json`：OpenClaw 主配置文件
+- `/etc/systemd/system/openclaw-gateway.service`：网关 systemd 服务文件
+- `~/.openclaw/openclaw.env`：运行时环境变量（API Key 等）
+- `~/.openclaw/shared-knowledge/`：共享知识库目录
+- `~/.openclaw/shared-knowledge/knowledge/`：共享知识条目目录
+- `/vol2/1000/docker`：所有 Docker 配置文件目录
+
+## 🧷 记录规范（重要）
+- 后续新增路径、规则、流程时，**必须添加中文备注**，避免后期遗忘与误用。
+- 我需要在关键节点主动提醒你（如：定时任务状态、推送异常、凭据轮换、日志维护）。
 
 ---
 *最后更新：2026-02-12*
