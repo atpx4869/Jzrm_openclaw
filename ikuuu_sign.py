@@ -46,7 +46,6 @@ def get_environ(key: str, default: str = "", output: bool = True) -> str:
 def detect_bases() -> list[str]:
     candidates = [
         "https://ikuuu.nl",
-        "https://ikuuu.de",
     ]
 
     # 先尝试入口站自动跳转
