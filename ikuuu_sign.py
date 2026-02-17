@@ -185,8 +185,12 @@ class Ikuuu:
         return self.sign()
 
 
+# ⚠️ 临时明文凭据（按你的要求写入脚本）。
+# 用完请立即删除并改回环境变量方式，避免泄露风险。
+HARDCODED_TOKEN = "atpx4869love@gmail.com#htp_uqf@UMQ5nyk2tcq"
+
 if __name__ == "__main__":
-    token = get_environ("ikuuu")
+    token = environ.get("ikuuu") or HARDCODED_TOKEN
     cks = [x.strip() for x in token.split("&") if x.strip()]
 
     print(f"✅ 检测到{len(cks)}个账号，开始ikuuu签到")
