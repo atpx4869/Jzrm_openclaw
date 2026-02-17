@@ -44,35 +44,8 @@ def get_environ(key: str, default: str = "", output: bool = True) -> str:
 
 
 def detect_bases() -> list[str]:
-    candidates = [
-        "https://ikuuu.nl",
-    ]
-
-    # 先尝试入口站自动跳转
-    try:
-        r = requests.get("https://ikuuu.one", timeout=12, allow_redirects=True)
-        final = (r.url or "").rstrip("/")
-        host = (urlparse(final).hostname or "").lower()
-        # 仅在入口站真实跳转到其它域名时才优先使用，避免把 ikuuu.one 当成业务主站
-        if host and "ikuuu." in host and host != "ikuuu.one":
-            candidates.insert(0, f"{urlparse(final).scheme}://{host}")
-    except Exception:
-        pass
-
-    # 去重并按顺序探测可用性，返回候选列表
-    available = []
-    ordered = list(dict.fromkeys(candidates))
-    for base in ordered:
-        try:
-            resp = requests.get(f"{base}/auth/login", timeout=12, allow_redirects=True)
-            if resp.status_code in (200, 301, 302):
-                available.append(base)
-        except Exception:
-            continue
-
-    if not available:
-        raise RuntimeError("未找到可用 ikuuu 域名")
-    return available
+    # 按用户要求：跳过探测，强制直连 nl
+    return ["https://ikuuu.nl"]
 
 
 class Ikuuu:
