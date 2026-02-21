@@ -78,9 +78,9 @@ def maybe_decode_obfuscated_html(html: str) -> str:
     return html
 
 
-def extract_traffic_gb(html: str) -> str | None:
+def extract_traffic_info(html: str) -> tuple[str | None, str | None]:
     """
-    尝试从页面文本中提取“剩余流量/可用流量”等数值，统一返回 GB 字符串。
+    从页面文本提取剩余流量与总流量（GB）。
     """
     html = maybe_decode_obfuscated_html(html)
     soup = BeautifulSoup(html, "html.parser")
@@ -89,14 +89,23 @@ def extract_traffic_gb(html: str) -> str | None:
 
     text = re.sub(r"\s+", " ", soup.get_text(" "))
 
-    pattern = r"(?:剩余流量|可用流量|当前流量|流量余额|Traffic|Balance)[^0-9]{0,40}(\d+(?:\.\d+)?)\s*(TB|GB|MB)"
-    matches = re.findall(pattern, text, flags=re.IGNORECASE)
-    if not matches:
-        return None
+    remain = None
+    total = None
 
-    v, u = matches[0]
-    gb = traffic_to_gb(float(v), u)
-    return f"{gb:.2f}"
+    remain_pattern = r"(?:剩余流量|可用流量|当前流量|流量余额|Traffic|Balance)[^0-9]{0,40}(\d+(?:\.\d+)?)\s*(TB|GB|MB)"
+    total_pattern = r"(?:总流量|套餐流量|Total\s*Traffic|Plan\s*Traffic)[^0-9]{0,40}(\d+(?:\.\d+)?)\s*(TB|GB|MB)"
+
+    m1 = re.findall(remain_pattern, text, flags=re.IGNORECASE)
+    if m1:
+        v, u = m1[0]
+        remain = f"{traffic_to_gb(float(v), u):.2f}"
+
+    m2 = re.findall(total_pattern, text, flags=re.IGNORECASE)
+    if m2:
+        v, u = m2[0]
+        total = f"{traffic_to_gb(float(v), u):.2f}"
+
+    return remain, total
 
 
 class Ikuuu:
@@ -217,6 +226,7 @@ class Ikuuu:
             username = name_elem.text.strip() if name_elem else self.masked_email
 
             # 先走 API 精确获取；失败再尝试页面提取
+            total_syll = "未知"
             api_traffic = self.fetch_traffic_from_api()
             if api_traffic is not None:
                 syll = api_traffic
@@ -225,11 +235,20 @@ class Ikuuu:
                 if syll_elem and syll_elem.text.strip():
                     syll = syll_elem.text.strip()
                 else:
-                    extracted = extract_traffic_gb(user_res.text)
-                    syll = extracted if extracted else "未知"
+                    remain, total = extract_traffic_info(user_res.text)
+                    syll = remain if remain else "未知"
+                    if total:
+                        total_syll = total
+
+            # 即使上面命中了旧结构，也尽量再补抓一次总流量
+            if total_syll == "未知":
+                _, total = extract_traffic_info(user_res.text)
+                if total:
+                    total_syll = total
         except Exception:
             username = self.masked_email
             syll = "未知"
+            total_syll = "未知"
 
         try:
             time.sleep(random.uniform(1, 2))
@@ -245,11 +264,11 @@ class Ikuuu:
             sign_json = sign_res.json()
             sign_msg = sign_json.get("msg", "无信息")
             if "已经签到" in sign_msg or "获得" in sign_msg:
-                xx = f"[登录]：{username} [签到]：{sign_msg} [流量]：{syll}GB "
+                xx = f"[登录]：{username} [签到]：{sign_msg} [剩余流量]：{syll}GB [总流量]：{total_syll}GB "
             else:
                 xx = f"[登录]：{username} [签到]：未知结果 {sign_msg} "
         except Exception:
-            xx = f"[登录]：{username} [签到]：响应解析失败（非JSON） [流量]：{syll}GB "
+            xx = f"[登录]：{username} [签到]：响应解析失败（非JSON） [剩余流量]：{syll}GB [总流量]：{total_syll}GB "
 
         print(xx)
         self.msg += xx
