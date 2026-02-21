@@ -218,6 +218,7 @@ This is a starting point. Add your own conventions, style, and rules as you figu
 - 学到新知识时，考虑是否值得加入长期记忆
 - 遇到问题并解决后，记录踩坑经验
 - 发现用户偏好时，更新 `USER.md`
+- **执行细则（自动化）**：关键任务完成后立即执行 `scripts/memory_append.sh "事项"` 追加到当日日志，避免遗漏。
 
 ### 📁 文件说明
 - `memory/` - 每日原始日志，记录发生的事情
