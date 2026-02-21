@@ -14,6 +14,7 @@ ikuuu 自动签到（多账号）
 
 import time
 import random
+import re
 import requests
 from os import environ
 from urllib.parse import urlparse
@@ -46,6 +47,31 @@ def get_environ(key: str, default: str = "", output: bool = True) -> str:
 def detect_bases() -> list[str]:
     # 按用户要求：跳过探测，强制直连 nl
     return ["https://ikuuu.nl"]
+
+
+def traffic_to_gb(value: float, unit: str) -> float:
+    u = unit.upper()
+    if u == "TB":
+        return value * 1024
+    if u == "MB":
+        return value / 1024
+    return value
+
+
+def extract_traffic_gb(html: str) -> str | None:
+    """
+    尝试从页面文本中提取“剩余流量/可用流量”等数值，统一返回 GB 字符串。
+    """
+    text = re.sub(r"\s+", " ", html)
+
+    pattern = r"(?:剩余流量|可用流量|当前流量|流量余额|Traffic|Balance)[^0-9]{0,40}(\d+(?:\.\d+)?)\s*(TB|GB|MB)"
+    matches = re.findall(pattern, text, flags=re.IGNORECASE)
+    if not matches:
+        return None
+
+    v, u = matches[0]
+    gb = traffic_to_gb(float(v), u)
+    return f"{gb:.2f}"
 
 
 class Ikuuu:
@@ -97,6 +123,47 @@ class Ikuuu:
 
         return False
 
+    def fetch_traffic_from_api(self) -> str | None:
+        """
+        优先走常见面板 API，精确计算剩余流量（GB）。
+        """
+        candidates = [
+            ("GET", f"{self.base}/api/v1/user/info"),
+            ("GET", f"{self.base}/api/v1/user/getSubscribe"),
+            ("POST", f"{self.base}/api/v1/user/getSubscribe"),
+        ]
+
+        for method, url in candidates:
+            try:
+                if method == "GET":
+                    r = self.session.get(url, timeout=12)
+                else:
+                    r = self.session.post(url, timeout=12)
+                if r.status_code >= 400:
+                    continue
+                data = r.json().get("data", {})
+
+                transfer = data.get("transfer_enable")
+                u = data.get("u")
+                d = data.get("d")
+
+                # 有些面板返回字符串，统一转 float
+                if transfer is not None and u is not None and d is not None:
+                    remain = float(transfer) - float(u) - float(d)
+                    if remain >= 0:
+                        return f"{remain / (1024 ** 3):.2f}"
+
+                # 少数面板直接给剩余字段
+                for key in ("transfer_balance", "balance", "remain", "surplus"):
+                    if key in data:
+                        val = float(data[key])
+                        # 默认按字节理解
+                        return f"{val / (1024 ** 3):.2f}"
+            except Exception:
+                continue
+
+        return None
+
     def sign(self):
         if not self.login():
             xx = f"[登录]：{self.masked_email} 登录失败（风控/网络/账号密码），请检查 "
@@ -123,8 +190,18 @@ class Ikuuu:
                 "div", {"class": "d-sm-none d-lg-inline-block"}
             )
             username = name_elem.text.strip() if name_elem else self.masked_email
-            syll_elem = soup.find("span", {"class": "counter"})
-            syll = syll_elem.text.strip() if syll_elem else "未知"
+
+            # 先走 API 精确获取；失败再尝试页面提取
+            api_traffic = self.fetch_traffic_from_api()
+            if api_traffic is not None:
+                syll = api_traffic
+            else:
+                syll_elem = soup.find("span", {"class": "counter"})
+                if syll_elem and syll_elem.text.strip():
+                    syll = syll_elem.text.strip()
+                else:
+                    extracted = extract_traffic_gb(user_res.text)
+                    syll = extracted if extracted else "未知"
         except Exception:
             username = self.masked_email
             syll = "未知"
