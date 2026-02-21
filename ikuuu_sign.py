@@ -15,9 +15,10 @@ ikuuu 自动签到（多账号）
 import time
 import random
 import re
+import base64
+import binascii
 import requests
 from os import environ
-from urllib.parse import urlparse
 from bs4 import BeautifulSoup
 
 requests.packages.urllib3.disable_warnings()
@@ -58,11 +59,35 @@ def traffic_to_gb(value: float, unit: str) -> float:
     return value
 
 
+def maybe_decode_obfuscated_html(html: str) -> str:
+    """
+    某些页面把完整 HTML 包在超长 base64 字符串里，这里自动解码。
+    """
+    m = re.search(r"['\"]([A-Za-z0-9+/=]{2000,})['\"]", html)
+    if not m:
+        return html
+
+    try:
+        raw = base64.b64decode(m.group(1) + "===")
+        decoded = raw.decode("utf-8", "ignore")
+        if "<html" in decoded.lower() and "</html>" in decoded.lower():
+            return decoded
+    except (binascii.Error, ValueError):
+        pass
+
+    return html
+
+
 def extract_traffic_gb(html: str) -> str | None:
     """
     尝试从页面文本中提取“剩余流量/可用流量”等数值，统一返回 GB 字符串。
     """
-    text = re.sub(r"\s+", " ", html)
+    html = maybe_decode_obfuscated_html(html)
+    soup = BeautifulSoup(html, "html.parser")
+    for tag in soup(["script", "style", "noscript"]):
+        tag.extract()
+
+    text = re.sub(r"\s+", " ", soup.get_text(" "))
 
     pattern = r"(?:剩余流量|可用流量|当前流量|流量余额|Traffic|Balance)[^0-9]{0,40}(\d+(?:\.\d+)?)\s*(TB|GB|MB)"
     matches = re.findall(pattern, text, flags=re.IGNORECASE)
