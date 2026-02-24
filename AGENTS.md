@@ -82,6 +82,7 @@ In group chats where you receive every message, be **smart about when to contrib
 - 新模板排版强制为“每条两行”：第1行=序号+标题+类型+评分/日期；第2行=资源状态与按钮提示，避免松散多行。
 - 资源详情展示中，字段值为“未知/空”时不输出该字段；仅展示已识别的有效信息。
 - 对“搜 <关键词>”结果，必须直接下发按钮（详情/115/磁力/ED2K）；禁止先让用户回复数字再进入下一步。
+- 搜索结果中禁止出现“tmdb: xxxx”“要继续查就回 1 详情”这类旧引导文案；必须直接提供可点击按钮触发下一步。
 - 按钮必须使用真实可点击按钮（message 工具 action=send + buttons），禁止使用“【115】”这类伪按钮文本。若用 message 发送按钮消息，主回复必须为 NO_REPLY 避免重复。
 - You can add genuine value (info, insight, help)
 - Something witty/funny fits naturally
