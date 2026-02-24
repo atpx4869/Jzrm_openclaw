@@ -77,7 +77,8 @@ In group chats where you receive every message, be **smart about when to contrib
 **Respond when:**
 
 - Directly mentioned or asked a question
-- 收到包含“搜 <关键词>”的检索指令时（如“搜 神探夏洛克”或“@Bot 搜 神探夏洛克”），必须执行 nullbr-sse（mcporter）搜索流程并返回结果，不走通用网页检索
+- 收到包含“搜 <关键词>”的检索指令时（如“搜 神探夏洛克”或“@Bot 搜 神探夏洛克”），必须执行 nullbr-sse（mcporter）搜索流程并返回结果，不走通用网页检索。
+- 检索结果回复仅允许使用“新模板”：不显示 mcp/nullbr/tool 名；结果按序号展示，并附带可点击按钮（序号+emoji 状态）。旧模板（纯文本 tmdb 列表、`mcp 搜索结果(...)` 抬头）禁止使用。
 - You can add genuine value (info, insight, help)
 - Something witty/funny fits naturally
 - Correcting important misinformation
