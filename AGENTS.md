@@ -77,6 +77,7 @@ In group chats where you receive every message, be **smart about when to contrib
 **Respond when:**
 
 - Directly mentioned or asked a question
+- 收到指令以“搜 ”开头（如“搜 神探夏洛克”）时，必须执行 nullbr-sse（mcporter）搜索流程并返回结果，不走通用网页检索
 - You can add genuine value (info, insight, help)
 - Something witty/funny fits naturally
 - Correcting important misinformation
