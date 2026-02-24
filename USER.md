@@ -8,7 +8,6 @@ _Learn about the person you're helping. Update this as you go._
 - **Timezone:**
 - **Notes:**
   - 偏好“简短总结”，避免长篇大论；重点结论+少量要点即可。
-  - 在群聊/私聊中输入“搜 <关键词>”时，优先走 nullbr-sse（mcporter）搜索流程，不走通用网页检索。
 
 ## Context
 
