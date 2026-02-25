@@ -13,6 +13,7 @@
 - 2026-02-24：接入 nullbr-sse（mcporter）后，统一采用自然语言触发约定 `搜 <关键词>`、`tmdb_id: <id>`、`tmdb_id: <id> 资源 <类型>`，可显著降低查询操作复杂度并提升群聊复用性。
 - 2026-02-24：查询资源时优先返回 115；参数含 `resource_type` 时优先用 JSON `--args` 传参（如 `"115"`）以规避类型解析问题。
 - 2026-02-24：`mcporter config add ... api_key=...` 可快速接入，但长期应迁移为环境变量注入，避免明文 Key 出现在命令历史与配置中。
+- 2026-02-25：EvoMap Evolver 采用 `.env + crontab` 的轻量守护方案：`@reboot lifecycle start` + `*/5 lifecycle check`，可实现开机自启与异常自动拉起。
 
 
 ### 踩坑记录
@@ -52,6 +53,10 @@
 - `~/.openclaw/shared-knowledge/`：共享知识库目录
 - `~/.openclaw/shared-knowledge/knowledge/`：共享知识条目目录
 - `/vol2/1000/docker`：所有 Docker 配置文件目录
+- `~/.openclaw/workspace/integrations/evolver/`：EvoMap Evolver 安装目录（主程序）
+- `~/.openclaw/workspace/integrations/evolver/.env`：Evolver 运行参数（A2A 节点ID/密钥/心跳等）
+- `~/.openclaw/workspace/logs/evolver_lifecycle.log`：Evolver 生命周期守护日志（开机拉起/巡检）
+- `~/.openclaw/workspace/logs/evolver_loop.log`：Evolver 循环运行日志
 
 ## 🧷 记录规范（重要）
 - 后续新增路径、规则、流程时，**必须添加中文备注**，避免后期遗忘与误用。
