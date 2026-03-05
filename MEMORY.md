@@ -16,6 +16,8 @@
 - 2026-02-25：EvoMap Evolver 采用 `.env + crontab` 的轻量守护方案：`@reboot lifecycle start` + `*/5 lifecycle check`，可实现开机自启与异常自动拉起。
 - 2026-03-05：做开源方案选型时先锁定硬约束（如“必须有安卓客户端”“指定后端兼容”）再筛选候选，可明显减少无效检索与对比成本。
 - 2026-03-05：当未找到完全匹配方案时，应输出“已检索范围 + 未命中结论 + 最接近替代项”，提升结果可复核性与决策效率。
+- 2026-03-06：检索“平台专用能力”时需严格区分“目标平台发布能力”与“通用写作/发布工具”，避免把可替代工具误判为可直达能力。
+- 2026-03-06：针对 NeteaseCloudMusicAPI Enhanced 相关选型，需在结论中明确“可直接用”与“需二次适配”边界，降低落地沟通成本。
 
 ### 踩坑记录
 （记录遇到的问题和解决方案）
@@ -64,6 +66,7 @@
 - `~/.openclaw/workspace/integrations/evolver/.env`：Evolver 运行参数（A2A 节点ID/密钥/心跳等）
 - `~/.openclaw/workspace/logs/evolver_lifecycle.log`：Evolver 生命周期守护日志（开机拉起/巡检）
 - `~/.openclaw/workspace/logs/evolver_loop.log`：Evolver 循环运行日志
+- `~/.openclaw/workspace/skills/awesome-openclaw-skills/`：已克隆的 OpenClaw 社区技能合集（用于检索可复用 skill）
 
 ## 🧷 记录规范（重要）
 - 后续新增路径、规则、流程时，**必须添加中文备注**，避免后期遗忘与误用。
